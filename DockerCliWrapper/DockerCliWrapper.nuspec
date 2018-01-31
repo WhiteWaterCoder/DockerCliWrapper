@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>Docker CLI Wrapper</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://github.com/WhiteWaterCoder/DockerCliWrapper</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A c# wrapper for the Docker CLI.</description>
+    <summary>A c# wrapper for the Docker CLI.</summary>
+    <releaseNotes>Initial version. Only support for querying images.</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>Docker CLI</tags>
+  </metadata>
+</package>
