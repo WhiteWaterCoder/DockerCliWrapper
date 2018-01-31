@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace DockerCliWrapper.Docker
+namespace DockerCliWrapper.Docker.Images
 {
     public enum DockerImagesFormatPlaceHolders
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DockerCliWrapper.Docker
+namespace DockerCliWrapper.Docker.Images
 {
     internal static class DockerImagesResultsParser
     {

@@ -14,21 +14,23 @@ namespace DockerCliWrapper.Infrastructure
 
             _process.StartInfo.UseShellExecute = false;
             _process.StartInfo.RedirectStandardOutput = true;
+            _process.StartInfo.RedirectStandardError = true;
         }
 
         public static IShellExecutor Instance => _instance;
 
-        public string Execute(string command, string arguments)
+        public ShellExecuteResult Execute(string command, string arguments)
         {
             _process.StartInfo.FileName = command;
             _process.StartInfo.Arguments = arguments;
             _process.Start();
             
             string output = _process.StandardOutput.ReadToEnd();
+            string error = _process.StandardError.ReadToEnd();
 
             _process.WaitForExit();
 
-            return output;
+            return new ShellExecuteResult(string.IsNullOrEmpty(error), output, error);
         }
 
         public void Dispose()

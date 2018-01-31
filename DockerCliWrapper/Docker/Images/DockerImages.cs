@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DockerCliWrapper.Docker
+namespace DockerCliWrapper.Docker.Images
 {
     /// <summary>
     /// Read operation for all local images. <see cref="https://docs.docker.com/engine/reference/commandline/images/"/> 
@@ -165,21 +165,31 @@ namespace DockerCliWrapper.Docker
             return this;
         }
 
+        /// <summary>
+        /// Execute the object based on its current state.
+        /// </summary>
+        /// <returns>A list of docker images that fulfill the criteria specified on the object.</returns>
         public List<DockerImagesResult> Execute()
         {
             var result = ShellExecutor.Instance.Execute(Command, GenerateArguments());
 
+            if (!result.IsSuccessFull)
+            {
+                //TODO: Log
+                return new List<DockerImagesResult>();
+            }
+
             if (_beQuiet)
             {
-                return DockerImagesResultsParser.ParseQuietResult(result);
+                return DockerImagesResultsParser.ParseQuietResult(result.Output);
             }
 
             if (_placeHolders.Any())
             {
-                return DockerImagesResultsParser.ParseFormattedResult(result, _placeHolders);
+                return DockerImagesResultsParser.ParseFormattedResult(result.Output, _placeHolders);
             }
 
-            return DockerImagesResultsParser.ParseResult(result);
+            return DockerImagesResultsParser.ParseResult(result.Output);
         }
 
         private string GenerateArguments()

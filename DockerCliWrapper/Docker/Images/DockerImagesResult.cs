@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DockerCliWrapper.Docker
+namespace DockerCliWrapper.Docker.Images
 {
     public class DockerImagesResult
     {
