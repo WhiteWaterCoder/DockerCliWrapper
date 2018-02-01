@@ -13,35 +13,40 @@ namespace DockerCliWrapper.Docker.Image
 
         private const string RemoveFlag = "rm";
 
+        private readonly string _imageName;
+
+        public DockerImage(string imageName)
+        {
+            Guard.IsNotNullOrEmpty(nameof(imageName), _imageName);
+
+            _imageName = imageName;
+        }
+
         /// <summary>
-        /// Remove the image with the given name. If a container based on the image exists
+        /// Remove the image. If a container based on the image exists
         /// then it will not be removed.
         /// </summary>
-        /// <param name="imageName">The image name to remove.</param>
         /// <param name="errorMessage">The error message if one occurs.</param>
         /// <returns>True if the image was deleted successfully, otherwise false.</returns>
-        public bool Remove(string imageName, out string errorMessage)
+        public bool Remove(out string errorMessage)
         {
-            return Remove(imageName, false, out errorMessage);
+            return Remove(false, out errorMessage);
         }
 
         /// <summary>
-        /// Forcibly remove the image with the given name, even when a container based on the image exists,
+        /// Forcibly remove the image, even when a container based on the image exists,
         /// in which case the container will also be deleted.
         /// </summary>
-        /// <param name="imageName">The image name to remove.</param>
         /// <param name="errorMessage">The error message if one occurs.</param>
         /// <returns>True if the image was deleted successfully, otherwise false.</returns>
-        public bool ForceRemove(string imageName, out string errorMessage)
+        public bool ForceRemove(out string errorMessage)
         {
-            return Remove(imageName, true, out errorMessage);
+            return Remove(true, out errorMessage);
         }
 
-        private bool Remove(string imageName, bool force, out string errorMessage)
+        private bool Remove(bool force, out string errorMessage)
         {
-            Guard.IsNotNullOrEmpty(nameof(imageName), imageName);
-
-            var result = ShellExecutor.Instance.Execute(Command, $" {DefaultArg} {RemoveFlag} {imageName}{(force ? " -f" : "" )}");
+            var result = ShellExecutor.Instance.Execute(Command, $" {DefaultArg} {RemoveFlag} {_imageName}{(force ? " -f" : "" )}");
 
             if (result.IsSuccessFull)
             {

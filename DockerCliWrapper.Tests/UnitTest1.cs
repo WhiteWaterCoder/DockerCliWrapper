@@ -14,7 +14,7 @@ namespace DockerCliWrapper.Tests
             //                               .ShowAll()
             //                               .Execute();
 
-            var result2 = new DockerImage().Remove("hello-world", out string s);
+            var result2 = new DockerImage("hello-world").Remove(out string s);
         }
     }
 }
