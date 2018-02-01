@@ -6,23 +6,23 @@ A C# wrapper over the Docker CLI. Unlike [Docker.DotNet](https://github.com/Micr
 
 Before you use the library you need to make sure that Docker is running locally and that it is in your PATH. The current version has been tested against:
 
-`Client:`
-` Version:       17.12.0-ce`
-` API version:   1.35`
-` Go version:    go1.9.2`
-` Git commit:    c97c6d6`
-` Built: Wed Dec 27 20:05:22 2017`
-` OS/Arch:       windows/amd64`
+`Client:`  
+` Version:       17.12.0-ce`  
+` API version:   1.35`  
+` Go version:    go1.9.2`  
+` Git commit:    c97c6d6`  
+` Built: Wed Dec 27 20:05:22 2017`  
+` OS/Arch:       windows/amd64`  
 
-`Server:`
-` Engine:`
-`  Version:      17.12.0-ce`
-`  API version:  1.35 (minimum version 1.24)`
-`  Go version:   go1.9.2`
-`  Git commit:   c97c6d6`
-`  Built:        Wed Dec 27 20:15:52 2017`
-`  OS/Arch:      windows/amd64`
-`  Experimental: true`
+`Server:`  
+` Engine:`  
+`  Version:      17.12.0-ce`  
+`  API version:  1.35 (minimum version 1.24)`  
+`  Go version:   go1.9.2`  
+`  Git commit:   c97c6d6`  
+`  Built:        Wed Dec 27 20:15:52 2017`  
+`  OS/Arch:      windows/amd64`  
+`  Experimental: true`  
   
 The wrapper uses fluent syntax where possible. At the time of writing, only the following functionality is available:
 
