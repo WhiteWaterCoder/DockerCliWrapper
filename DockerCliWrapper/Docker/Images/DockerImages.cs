@@ -20,7 +20,7 @@ namespace DockerCliWrapper.Docker.Images
         private bool _showDigests;
         private bool _doNotTruncate;
         private IDictionary<string, string> _filters;
-        private List<DockerImagesFormatPlaceHolders> _placeHolders;
+        private List<GoFormattingPlaceHolders> _placeHolders;
         private bool _beQuiet;
         private string _repository;
         private string _tag;
@@ -28,7 +28,7 @@ namespace DockerCliWrapper.Docker.Images
         public DockerImages()
         {
             _filters = new Dictionary<string, string>();
-            _placeHolders = new List<DockerImagesFormatPlaceHolders>();
+            _placeHolders = new List<GoFormattingPlaceHolders>();
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace DockerCliWrapper.Docker.Images
         /// </summary>
         /// <param name="placeHolders">A collection of enums containing the available Go placeholder.</param>
         /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages FormatResults(List<DockerImagesFormatPlaceHolders> placeHolders)
+        public DockerImages FormatResults(List<GoFormattingPlaceHolders> placeHolders)
         {
             if (!placeHolders.Any())
             {
@@ -181,12 +181,14 @@ namespace DockerCliWrapper.Docker.Images
 
             if (_beQuiet)
             {
-                return DockerImagesResultsParser.ParseQuietResult(result.Output);
+                return ResultsParser.ParseQuietResult(result.Output, i => new DockerImagesResult(i));
             }
 
             if (_placeHolders.Any())
             {
-                return DockerImagesResultsParser.ParseFormattedResult(result.Output, _placeHolders);
+                return ResultsParser.ParseFormattedResult(result.Output, 
+                    (imageId, repository, tag, digest, createdSince, createdAt, size) => new DockerImagesResult(imageId, repository, tag, digest, createdSince, createdAt, size),
+                    _placeHolders);
             }
 
             return DockerImagesResultsParser.ParseResult(result.Output);
@@ -213,22 +215,9 @@ namespace DockerCliWrapper.Docker.Images
                 arguments.AppendFormat(" -f \"{0}={1}\"", filter.Key, filter.Value);
             }
 
-            if (_placeHolders.Any())
-            {
-                arguments.AppendFormat(
-                    " --format \"{0}\"", 
-                    string.Join(" ~ ", _placeHolders.Select(p => "{{" + p.GetDescription() + "}}")));
-            }
-
-            if (_doNotTruncate)
-            {
-                arguments.Append(" --no-trunc");
-            }
-
-            if (_beQuiet)
-            {
-                arguments.Append(" -q");
-            }
+            arguments.AppendGoFormattingArguments(_placeHolders);
+            arguments.AppendNoTruncArgument(_doNotTruncate);
+            arguments.AppendQuietArgument(_beQuiet);
 
             return arguments.ToString();
         }

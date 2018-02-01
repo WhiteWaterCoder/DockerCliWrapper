@@ -8,18 +8,18 @@ namespace DockerCliWrapper.Docker.Image
     /// </summary>
     public class DockerImage
     {
-        private const string Command = "docker";
-        private const string DefaultArg = "image";
+        internal const string Command = "docker";
+        internal const string DefaultArg = "image";
 
         private const string RemoveFlag = "rm";
 
-        private readonly string _imageName;
+        public string ImageName { get; }
 
         public DockerImage(string imageName)
         {
-            Guard.IsNotNullOrEmpty(nameof(imageName), _imageName);
+            Guard.IsNotNullOrEmpty(nameof(imageName), imageName);
 
-            _imageName = imageName;
+            ImageName = imageName;
         }
 
         /// <summary>
@@ -44,9 +44,18 @@ namespace DockerCliWrapper.Docker.Image
             return Remove(true, out errorMessage);
         }
 
+        /// <summary>
+        /// Creates an image history object which can have its settings set and executed.
+        /// </summary>
+        /// <returns>The history object for this image.</returns>
+        public DockerImageHistory ShowHistory()
+        {
+            return new DockerImageHistory(this);
+        }
+
         private bool Remove(bool force, out string errorMessage)
         {
-            var result = ShellExecutor.Instance.Execute(Command, $" {DefaultArg} {RemoveFlag} {_imageName}{(force ? " -f" : "" )}");
+            var result = ShellExecutor.Instance.Execute(Command, $" {DefaultArg} {RemoveFlag} {ImageName}{(force ? " -f" : "" )}");
 
             if (result.IsSuccessFull)
             {
@@ -57,6 +66,11 @@ namespace DockerCliWrapper.Docker.Image
             errorMessage = result.Error;
 
             return false;
+        }
+
+        public override string ToString()
+        {
+            return ImageName;
         }
     }
 }
