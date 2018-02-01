@@ -36,9 +36,9 @@ Return a list of all images currently installed and do not truncate the data:
 
 Remove the image called `hello-world`. Returns true if successful, otherwise false along with the error message:
 
-new DockerImage("hello-world").Remove(out string s)
+`new DockerImage("hello-world").Remove(out string s)`
 
 If a container based on that image already exists you will not be able to remove it unless you force remove it:
 
-new DockerImage("hello-world").ForceRemove(out string s)
+`new DockerImage("hello-world").ForceRemove(out string s)`
   
