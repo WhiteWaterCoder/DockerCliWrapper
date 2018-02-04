@@ -4,86 +4,8 @@ using System.Linq;
 
 namespace DockerCliWrapper.Docker.Images
 {
-    internal static class DockerImagesResultsParser
+    internal class DockerImagesResultsParser : ResultsParser
     {
-        private static readonly char[] _newLineSplitter = new[] { '\r', '\n' };
-        private static readonly char[] _tabSplitter = new[] { '\t' };
-        private static readonly string[] _formattedResultsSplitter = new[] { " ~ " };
-
-        public static List<DockerImagesResult> ParseQuietResult(string output)
-        {
-            // We only get a list of IMAGE IDs without a header
-            return output.Split(_newLineSplitter, StringSplitOptions.RemoveEmptyEntries)
-                         .Select(i => new DockerImagesResult(i))
-                         .ToList();
-        }
-
-        public static List<DockerImagesResult> ParseFormattedResult(string output, List<DockerImagesFormatPlaceHolders> placeHolders)
-        {
-            var result = new List<DockerImagesResult>();
-
-            // We will get no header and columns in specified order, seperated by ~
-            var lines = output.Split(_newLineSplitter, StringSplitOptions.RemoveEmptyEntries);
-
-            foreach(var line in lines)
-            {
-                var columns = line.Split(_formattedResultsSplitter, StringSplitOptions.RemoveEmptyEntries);
-
-                string imageId = "";
-                string repository = "";
-                string tag = "";
-                string digest = "";
-                string createdSince = "";
-                string size = "";
-                DateTime createdAt = DateTime.MinValue;
-
-                int columnIndex = 0;
-
-                foreach(var column in columns)
-                {
-                    if (placeHolders[columnIndex] == DockerImagesFormatPlaceHolders.ImageId)
-                    {
-                        imageId = column;
-                        continue;
-                    }
-                    if (placeHolders[columnIndex] == DockerImagesFormatPlaceHolders.ImageRepository)
-                    {
-                        repository = column;
-                        continue;
-                    }
-                    if (placeHolders[columnIndex] == DockerImagesFormatPlaceHolders.ImageTag)
-                    {
-                        tag = column;
-                        continue;
-                    }
-                    if (placeHolders[columnIndex] == DockerImagesFormatPlaceHolders.ImageDigest)
-                    {
-                        digest = column;
-                        continue;
-                    }
-                    if (placeHolders[columnIndex] == DockerImagesFormatPlaceHolders.ElapsedTimeSinceImageWasCreated)
-                    {
-                        createdSince = column;
-                        continue;
-                    }
-                    if (placeHolders[columnIndex] == DockerImagesFormatPlaceHolders.ImageDiskSize)
-                    {
-                        size = column;
-                        continue;
-                    }
-                    if (placeHolders[columnIndex] == DockerImagesFormatPlaceHolders.TimeWhenTheImageWasCreated)
-                    {
-                        DateTime.TryParse(column, out createdAt);
-                        continue;
-                    }
-                }
-
-                result.Add(new DockerImagesResult(imageId, repository, tag, digest, createdSince, createdAt, size));
-            }
-
-            return result;
-        }
-
         public static List<DockerImagesResult> ParseResult(string output)
         {
             var result = new List<DockerImagesResult>();

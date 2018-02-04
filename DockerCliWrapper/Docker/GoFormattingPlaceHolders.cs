@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace DockerCliWrapper.Docker.Images
+namespace DockerCliWrapper.Docker
 {
-    public enum DockerImagesFormatPlaceHolders
+    public enum GoFormattingPlaceHolders
     {
         [Description(".ID")]
         ImageId,
