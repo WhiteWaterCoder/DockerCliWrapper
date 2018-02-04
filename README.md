@@ -34,6 +34,8 @@ Return a list of all images currently installed and do not truncate the data:
 
 ### Image
 
+#### Remove Image
+
 Remove the image called `hello-world`. Returns true if successful, otherwise false along with the error message:
 
 `new DockerImage("hello-world").Remove(out string s)`
@@ -41,4 +43,13 @@ Remove the image called `hello-world`. Returns true if successful, otherwise fal
 If a container based on that image already exists you will not be able to remove it unless you force remove it:
 
 `new DockerImage("hello-world").ForceRemove(out string s)`
-  
+
+#### Image History
+
+Checking the history of an image with the default settings:
+
+`new DockerImage("hello-world").History().Execute()`
+
+Chain additional settings:
+
+`new DockerImage("hello-world").History().CreateOutputInHumanReadableFormat(false).DoNotTruncate().Execute()`
