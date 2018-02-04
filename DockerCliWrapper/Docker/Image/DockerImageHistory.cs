@@ -10,15 +10,17 @@ namespace DockerCliWrapper.Docker.Image
     public class DockerImageHistory
     {
         private readonly DockerImage _image;
+        private readonly IShellExecutor _shellExecutor;
 
         private List<GoFormattingPlaceHolders> _placeHolders;
         private bool _humanReadable = true;
         private bool _doNotTruncate;
         private bool _beQuiet;
 
-        public DockerImageHistory(DockerImage image)
+        internal DockerImageHistory(DockerImage image, IShellExecutor shellExecutor)
         {
             _image = image;
+            _shellExecutor = shellExecutor;
 
             _placeHolders = new List<GoFormattingPlaceHolders>();
         }
@@ -76,7 +78,7 @@ namespace DockerCliWrapper.Docker.Image
         /// <returns>A list of docker image history entries that fulfill the criteria specified on the object.</returns>
         public List<DockerImageHistoryResult> Execute()
         {
-            var result = ShellExecutor.Instance.Execute(DockerImage.Command, GenerateArguments());
+            var result = _shellExecutor.Execute(DockerImage.Command, GenerateArguments());
 
             if (!result.IsSuccessFull)
             {
@@ -92,7 +94,7 @@ namespace DockerCliWrapper.Docker.Image
             if (_placeHolders.Any())
             {
                 return ResultsParser.ParseFormattedResult(result.Output,
-                        (imageId, _, __, ___, createdSince, createdAt, size) => new DockerImageHistoryResult(imageId, createdSince, createdAt, size, ""),
+                        (imageId, _, __, ___, createdSince, createdAt, size) => new DockerImageHistoryResult(imageId, createdSince, createdAt, "", size, ""),
                         _placeHolders);
             }
 
@@ -105,13 +107,14 @@ namespace DockerCliWrapper.Docker.Image
 
             arguments.Append($" {DockerImage.DefaultArg}");
             arguments.Append(" history");
-            arguments.Append($" {_image}");
 
             arguments.AppendFormat($" -H={_humanReadable}");
             
             arguments.AppendGoFormattingArguments(_placeHolders);
             arguments.AppendNoTruncArgument(_doNotTruncate);
             arguments.AppendQuietArgument(_beQuiet);
+
+            arguments.Append($" {_image}");
 
             return arguments.ToString();
         }

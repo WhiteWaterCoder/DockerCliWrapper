@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace DockerCliWrapper.Docker.Image
 {
@@ -21,7 +22,8 @@ namespace DockerCliWrapper.Docker.Image
             int imageColumnLength = "IMAGE".Length + headerLine.TakeWhile(Char.IsWhiteSpace).Count();
 
             string createdColumnHeader = isHumanReadable ? "CREATED" : "CREATED AT";
-            headerLine = headerLine.TrimStart().Replace(createdColumnHeader, "");
+            var regex = new Regex(Regex.Escape(createdColumnHeader));
+            headerLine = regex.Replace(headerLine.TrimStart(), "", 1);
             int createdColumnLength = createdColumnHeader.Length + headerLine.TakeWhile(Char.IsWhiteSpace).Count();
 
             headerLine = headerLine.TrimStart().Replace("CREATED BY", "");
@@ -41,9 +43,9 @@ namespace DockerCliWrapper.Docker.Image
                 DateTime.TryParse(line.Substring(imageColumnLength, createdColumnLength).Trim(), out DateTime createdAt);
                 string createdBy = line.Substring(imageColumnLength + createdColumnLength, createdByColumnLength).Trim();
                 string size = line.Substring(imageColumnLength + createdColumnLength + createdByColumnLength, sizeColumnLength).Trim();
-                string comment = line.Substring(imageColumnLength + createdColumnLength + createdByColumnLength + sizeColumnLength, commentColumnLength).Trim();
+                string comment = line.Substring(imageColumnLength + createdColumnLength + createdByColumnLength + sizeColumnLength).Trim();
 
-                result.Add(new DockerImageHistoryResult(image, created, createdAt, size, comment));
+                result.Add(new DockerImageHistoryResult(image, created, createdAt, createdBy, size, comment));
             }
 
             return result;

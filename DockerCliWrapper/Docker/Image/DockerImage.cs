@@ -13,11 +13,20 @@ namespace DockerCliWrapper.Docker.Image
 
         private const string RemoveFlag = "rm";
 
+        private readonly IShellExecutor _shellExecutor;
+
         public string ImageName { get; }
 
         public DockerImage(string imageName)
+            : this(imageName, ShellExecutor.Instance)
+        {
+        }
+
+        internal DockerImage(string imageName, IShellExecutor shellExecutor)
         {
             Guard.IsNotNullOrEmpty(nameof(imageName), imageName);
+
+            _shellExecutor = shellExecutor;
 
             ImageName = imageName;
         }
@@ -48,14 +57,14 @@ namespace DockerCliWrapper.Docker.Image
         /// Creates an image history object which can have its settings set and executed.
         /// </summary>
         /// <returns>The history object for this image.</returns>
-        public DockerImageHistory ShowHistory()
+        public DockerImageHistory History()
         {
-            return new DockerImageHistory(this);
+            return new DockerImageHistory(this, _shellExecutor);
         }
 
         private bool Remove(bool force, out string errorMessage)
         {
-            var result = ShellExecutor.Instance.Execute(Command, $" {DefaultArg} {RemoveFlag} {ImageName}{(force ? " -f" : "" )}");
+            var result = _shellExecutor.Execute(Command, $" {DefaultArg} {RemoveFlag} {ImageName}{(force ? " -f" : "" )}");
 
             if (result.IsSuccessFull)
             {

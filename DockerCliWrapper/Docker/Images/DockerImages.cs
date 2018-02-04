@@ -16,6 +16,8 @@ namespace DockerCliWrapper.Docker.Images
         private const string Command = "docker";
         private const string DefaultArg = "images";
 
+        private readonly IShellExecutor _shellExecutor;
+
         private bool _showAll;
         private bool _showDigests;
         private bool _doNotTruncate;
@@ -26,7 +28,15 @@ namespace DockerCliWrapper.Docker.Images
         private string _tag;
 
         public DockerImages()
+            : this(ShellExecutor.Instance)
         {
+
+        }
+
+        internal DockerImages(IShellExecutor shellExecutor)
+        {
+            _shellExecutor = shellExecutor;
+
             _filters = new Dictionary<string, string>();
             _placeHolders = new List<GoFormattingPlaceHolders>();
         }
@@ -171,7 +181,7 @@ namespace DockerCliWrapper.Docker.Images
         /// <returns>A list of docker images that fulfill the criteria specified on the object.</returns>
         public List<DockerImagesResult> Execute()
         {
-            var result = ShellExecutor.Instance.Execute(Command, GenerateArguments());
+            var result = _shellExecutor.Execute(Command, GenerateArguments());
 
             if (!result.IsSuccessFull)
             {

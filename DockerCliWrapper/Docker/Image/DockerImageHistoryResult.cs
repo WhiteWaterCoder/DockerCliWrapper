@@ -8,6 +8,7 @@ namespace DockerCliWrapper.Docker.Image
         public string ImageId { get; }
         public string CreatedSince { get; }
         public DateTime CreatedAt { get; }
+        public string CreatedBy { get; }
         public string Size { get; }
         public string Comment { get; }
 
@@ -16,10 +17,12 @@ namespace DockerCliWrapper.Docker.Image
             ImageId = imageId;
         }
 
-        public DockerImageHistoryResult(string imageId, string createdSince, DateTime createdAt, string size, string comment) : this(imageId)
+        public DockerImageHistoryResult(string imageId, string createdSince, DateTime createdAt, string createdBy, string size, string comment) 
+            : this(imageId)
         {
             CreatedSince = createdSince;
             CreatedAt = createdAt;
+            CreatedBy = createdBy;
             Size = size;
             Comment = comment;
         }
