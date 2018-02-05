@@ -4,4 +4,4 @@ dotnet: 2.0.0
 script:
   - dotnet restore
   - dotnet build ./DockerCliWrapper.sln --configuration Release
-  - dotnet test ./DockerCliWrapper.Tests/bin/Release/netcoreapp2.0/DockerCliWrapper.Tests.dll
+  - dotnet test ./DockerCliWrapper.Tests/DockerCliWrapper.Tests.csproj --configuration Release --no-restore
