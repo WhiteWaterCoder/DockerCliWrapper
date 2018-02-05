@@ -86,7 +86,7 @@ namespace DockerCliWrapper.Tests
             results[0].ImageId.Should().Be("ecea3d792cd1");
             results[0].CreatedBy.Should().Be("cmd /S /C #(nop)  CMD [\"cmd\" \" / C\" \"type C:\\…");
             results[0].Comment.Should().Be("Comment1");
-            results[0].CreatedAt.Should().Be(new DateTime(2018, 1, 8, 20,7, 42));
+            results[0].CreatedAt.Should().Be(new DateTime(2018, 1, 8, 20, 7, 42));
             results[0].CreatedSince.Should().BeNullOrEmpty();
             results[0].Size.Should().Be("40960");
         }
