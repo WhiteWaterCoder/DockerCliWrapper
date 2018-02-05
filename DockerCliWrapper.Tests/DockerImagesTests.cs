@@ -1,4 +1,4 @@
-﻿using DockerCliWrapper.Docker.Images;
+using DockerCliWrapper.Docker.Images;
 using DockerCliWrapper.Infrastructure;
 using FluentAssertions;
 using Moq;
