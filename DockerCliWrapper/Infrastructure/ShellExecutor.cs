@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using DockerCliWrapper.Extensions;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace DockerCliWrapper.Infrastructure
 {
@@ -20,7 +22,7 @@ namespace DockerCliWrapper.Infrastructure
 
         public static IShellExecutor Instance => _instance;
 
-        public ShellExecuteResult Execute(string command, string arguments)
+        public async Task<ShellExecuteResult> Execute(string command, string arguments)
         {
             _process.StartInfo.FileName = command;
             _process.StartInfo.Arguments = arguments;
@@ -29,7 +31,7 @@ namespace DockerCliWrapper.Infrastructure
             string output = _process.StandardOutput.ReadToEnd();
             string error = _process.StandardError.ReadToEnd();
 
-            _process.WaitForExit();
+            await _process.WaitForExitAsync();
 
             return new ShellExecuteResult(string.IsNullOrEmpty(error), output, error);
         }

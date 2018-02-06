@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DockerCliWrapper.Docker.Images
 {
@@ -179,9 +180,9 @@ namespace DockerCliWrapper.Docker.Images
         /// Execute the object based on its current state.
         /// </summary>
         /// <returns>A list of docker images that fulfill the criteria specified on the object.</returns>
-        public List<DockerImagesResult> Execute()
+        public async Task<List<DockerImagesResult>> Execute()
         {
-            var result = _shellExecutor.Execute(Command, GenerateArguments());
+            var result = await _shellExecutor.Execute(Command, GenerateArguments());
 
             if (!result.IsSuccessFull)
             {

@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace DockerCliWrapper.Infrastructure
 {
     public interface IShellExecutor : IDisposable
     {
-        ShellExecuteResult Execute(string command, string arguments);
+        Task<ShellExecuteResult> Execute(string command, string arguments);
     }
 }
