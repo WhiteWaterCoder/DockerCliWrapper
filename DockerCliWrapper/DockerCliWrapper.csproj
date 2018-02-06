@@ -15,6 +15,9 @@
     <PackageTags>Docker CLI</PackageTags>
     <RepositoryUrl>https://github.com/WhiteWaterCoder/DockerCliWrapper</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>DockerCLIWrapperKey.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
 </Project>

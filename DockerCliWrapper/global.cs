@@ -1,3 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("DockerCliWrapper.Tests")]
+[assembly: InternalsVisibleTo("DockerCliWrapper.Tests,PublicKey=" +
+    "0024000004800000940000000602000000240000525341310004000001000100415cdaefbabfb1" +
+    "cca82b297f846525a3f3580cbc6020b65425b373ce520f053b94b3948b3995029fa2e3a4d04e61" +
+    "ad1432561980eedacae90958ee53f5567aea69cf83429f192c3ff8638ee1daffaf95e2f1088e55" +
+    "458b59b474b9dbe2c5b3b30f6d9533b99992a809f845dfc073f578d974871cd9197d43c33258a6" +
+    "4885bdbc")]
