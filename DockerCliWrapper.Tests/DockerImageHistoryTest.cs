@@ -4,6 +4,7 @@ using FluentAssertions;
 using Moq;
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DockerCliWrapper.Tests
@@ -11,17 +12,17 @@ namespace DockerCliWrapper.Tests
     public class GivenADockerImageHistoryInstance
     {
         [Fact]
-        public void WhenRequestingToBeQuiet_ThenOnlyImageIdsAreReturned()
+        public async Task WhenRequestingToBeQuiet_ThenOnlyImageIdsAreReturned()
         {
             var shellExecutor = new Mock<IShellExecutor>();
 
             shellExecutor
                 .Setup(e => e.Execute("docker", " image history -H=True -q imageName"))
-                .Returns(new ShellExecuteResult(true, "ecea3d792cd1" + Environment.NewLine + "<missing>", ""));
+                .ReturnsAsync(new ShellExecuteResult(true, "ecea3d792cd1" + Environment.NewLine + "<missing>", ""));
 
             var dockerImage = new DockerImage("imageName", shellExecutor.Object);
 
-            var results = dockerImage.History().BeQuiet().Execute();
+            var results = await dockerImage.History().BeQuiet().Execute();
 
             results.Count.Should().Be(2);
             results[0].ImageId.Should().Be("ecea3d792cd1");
@@ -34,7 +35,7 @@ namespace DockerCliWrapper.Tests
         }
 
         [Fact]
-        public void WhenRequestingToNotTruncate_ThenUntruncatedDataIsReturned()
+        public async Task WhenRequestingToNotTruncate_ThenUntruncatedDataIsReturned()
         {
             var output = new StringBuilder();
             output.AppendLine("IMAGE                                                                     CREATED             CREATED BY                                                                                           SIZE                COMMENT");
@@ -47,11 +48,11 @@ namespace DockerCliWrapper.Tests
 
             shellExecutor
                 .Setup(e => e.Execute("docker", " image history -H=True --no-trunc imageName"))
-                .Returns(new ShellExecuteResult(true, output.ToString(), ""));
+                .ReturnsAsync(new ShellExecuteResult(true, output.ToString(), ""));
 
             var dockerImage = new DockerImage("imageName", shellExecutor.Object);
 
-            var results = dockerImage.History().DoNotTruncate().Execute();
+            var results = await dockerImage.History().DoNotTruncate().Execute();
 
             results.Count.Should().Be(4);
             results[0].ImageId.Should().Be("sha256:ecea3d792cd143caccdf16935cfa1e4d0ec566a6d9e64eac25dfe9087c806702");
@@ -63,7 +64,7 @@ namespace DockerCliWrapper.Tests
         }
 
         [Fact]
-        public void WhenRequestingNonHumanReadableFormat_ThenNonHumanReadableDataIsReturned()
+        public async Task WhenRequestingNonHumanReadableFormat_ThenNonHumanReadableDataIsReturned()
         {
             var output = new StringBuilder();
             output.AppendLine("IMAGE               CREATED AT                  CREATED BY                                      SIZE                COMMENT");
@@ -76,11 +77,11 @@ namespace DockerCliWrapper.Tests
 
             shellExecutor
                 .Setup(e => e.Execute("docker", " image history -H=False imageName"))
-                .Returns(new ShellExecuteResult(true, output.ToString(), ""));
+                .ReturnsAsync(new ShellExecuteResult(true, output.ToString(), ""));
 
             var dockerImage = new DockerImage("imageName", shellExecutor.Object);
 
-            var results = dockerImage.History().CreateOutputInHumanReadableFormat(false).Execute();
+            var results = await dockerImage.History().CreateOutputInHumanReadableFormat(false).Execute();
 
             results.Count.Should().Be(4);
             results[0].ImageId.Should().Be("ecea3d792cd1");
@@ -92,7 +93,7 @@ namespace DockerCliWrapper.Tests
         }
 
         [Fact]
-        public void WhenImageDoesNotExist_ThenNoResultsAreReturned()
+        public async Task WhenImageDoesNotExist_ThenNoResultsAreReturned()
         {
             const string output = "Error response from daemon: No such image: nonExistentImage:latest";
 
@@ -100,11 +101,11 @@ namespace DockerCliWrapper.Tests
 
             shellExecutor
                 .Setup(e => e.Execute("docker", " image history -H=True nonExistentImage"))
-                .Returns(new ShellExecuteResult(true, output.ToString(), ""));
+                .ReturnsAsync(new ShellExecuteResult(true, output.ToString(), ""));
 
             var dockerImage = new DockerImage("nonExistentImage", shellExecutor.Object);
 
-            var results = dockerImage.History().Execute();
+            var results = await dockerImage.History().Execute();
 
             results.Count.Should().Be(0);
         }

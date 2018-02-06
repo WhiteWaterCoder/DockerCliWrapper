@@ -3,6 +3,7 @@ using DockerCliWrapper.Infrastructure;
 using FluentAssertions;
 using Moq;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DockerCliWrapper.Tests
@@ -10,7 +11,7 @@ namespace DockerCliWrapper.Tests
     public class GivenADockerImagesInstance
     {
         [Fact]
-        public void WhenRequestingAllImages_ThenAllAreReturned()
+        public async Task WhenRequestingAllImages_ThenAllAreReturned()
         {
             var shellExecutor = new Mock<IShellExecutor>();
 
@@ -22,9 +23,9 @@ namespace DockerCliWrapper.Tests
 
             shellExecutor
                 .Setup(e => e.Execute("docker", " images -a"))
-                .Returns(new ShellExecuteResult(true, output.ToString(), ""));
+                .ReturnsAsync(new ShellExecuteResult(true, output.ToString(), ""));
 
-            var result = new DockerImages(shellExecutor.Object).ShowAll().Execute();
+            var result = await new DockerImages(shellExecutor.Object).ShowAll().Execute();
 
             result.Count.Should().Be(3);
             result[0].ImageId.Should().Be("f998ed08bddd");

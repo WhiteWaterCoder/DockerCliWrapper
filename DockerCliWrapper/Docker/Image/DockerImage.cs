@@ -1,4 +1,5 @@
 ﻿using DockerCliWrapper.Infrastructure;
+using System.Threading.Tasks;
 
 namespace DockerCliWrapper.Docker.Image
 {
@@ -35,22 +36,20 @@ namespace DockerCliWrapper.Docker.Image
         /// Remove the image. If a container based on the image exists
         /// then it will not be removed.
         /// </summary>
-        /// <param name="errorMessage">The error message if one occurs.</param>
-        /// <returns>True if the image was deleted successfully, otherwise false.</returns>
-        public bool Remove(out string errorMessage)
+        /// <returns>True if the image was deleted successfully, otherwise false along with the error message.</returns>
+        public async Task<Result> Remove()
         {
-            return Remove(false, out errorMessage);
+            return await Remove(false);
         }
 
         /// <summary>
         /// Forcibly remove the image, even when a container based on the image exists,
         /// in which case the container will also be deleted.
         /// </summary>
-        /// <param name="errorMessage">The error message if one occurs.</param>
-        /// <returns>True if the image was deleted successfully, otherwise false.</returns>
-        public bool ForceRemove(out string errorMessage)
+        /// <returns>True if the image was deleted successfully, otherwise false along with the error message.</returns>
+        public async Task<Result> ForceRemove()
         {
-            return Remove(true, out errorMessage);
+            return await Remove(true);
         }
 
         /// <summary>
@@ -62,19 +61,11 @@ namespace DockerCliWrapper.Docker.Image
             return new DockerImageHistory(this, _shellExecutor);
         }
 
-        private bool Remove(bool force, out string errorMessage)
+        private async Task<Result> Remove(bool force)
         {
-            var result = _shellExecutor.Execute(Command, $" {DefaultArg} {RemoveFlag} {ImageName}{(force ? " -f" : "" )}");
+            var shellResult = await _shellExecutor.Execute(Command, $" {DefaultArg} {RemoveFlag} {ImageName}{(force ? " -f" : "" )}");
 
-            if (result.IsSuccessFull)
-            {
-                errorMessage = "";
-                return true;
-            }
-
-            errorMessage = result.Error;
-
-            return false;
+            return new Result(shellResult.IsSuccessFull, shellResult.Error);
         }
 
         public override string ToString()
