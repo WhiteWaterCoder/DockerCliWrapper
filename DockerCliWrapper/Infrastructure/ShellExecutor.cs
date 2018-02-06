@@ -13,6 +13,7 @@ namespace DockerCliWrapper.Infrastructure
             _process = new Process();
 
             _process.StartInfo.UseShellExecute = false;
+            _process.StartInfo.CreateNoWindow = true;
             _process.StartInfo.RedirectStandardOutput = true;
             _process.StartInfo.RedirectStandardError = true;
         }
