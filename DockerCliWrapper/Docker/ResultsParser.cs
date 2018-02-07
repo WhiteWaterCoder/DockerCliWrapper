@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DockerCliWrapper.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,14 +7,13 @@ namespace DockerCliWrapper.Docker
 {
     internal class ResultsParser
     {
-        protected static readonly char[] _newLineSplitter = new[] { '\r', '\n' };
         private static readonly string[] _formattedResultsSplitter = new[] { " ~ " };
 
         public static List<T> ParseQuietResult<T>(string output, Func<string, T> factory)
             where T : IResult
         {
             // We only get a list of IMAGE IDs without a header
-            return output.Split(_newLineSplitter, StringSplitOptions.RemoveEmptyEntries)
+            return output.SplitLines()
                          .Select(i => factory(i))
                          .ToList();
         }
@@ -25,7 +25,7 @@ namespace DockerCliWrapper.Docker
             var result = new List<T>();
 
             // We will get no header and columns in specified order, seperated by ~
-            var lines = output.Split(_newLineSplitter, StringSplitOptions.RemoveEmptyEntries);
+            var lines = output.SplitLines();
 
             foreach (var line in lines)
             {
