@@ -26,6 +26,12 @@ Before you use the library you need to make sure that Docker is running locally 
   
 The wrapper uses fluent syntax where possible and is fully asnyc. At the time of writing, only the following functionality is available:
 
+### Status
+
+Get the running status and details (as above) of both the client & server:
+
+`await new DockerStatus();`
+
 ### Images
 
 Return a list of all images currently installed and do not truncate the data:
