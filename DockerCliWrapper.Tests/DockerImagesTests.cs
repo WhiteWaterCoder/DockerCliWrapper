@@ -1,3 +1,4 @@
+using DockerCliWrapper.Docker.Constants;
 using DockerCliWrapper.Docker.Images;
 using DockerCliWrapper.Infrastructure;
 using FluentAssertions;
@@ -22,7 +23,7 @@ namespace DockerCliWrapper.Tests
             output.AppendLine("hello-world                         latest                ecea3d792cd1        3 weeks ago         303MB");
 
             shellExecutor
-                .Setup(e => e.Execute("docker", " images -a"))
+                .Setup(e => e.Execute(Commands.Docker, " images -a"))
                 .ReturnsAsync(new ShellExecuteResult(true, output.ToString(), ""));
 
             var result = await new DockerImages(shellExecutor.Object).ShowAll().Execute();

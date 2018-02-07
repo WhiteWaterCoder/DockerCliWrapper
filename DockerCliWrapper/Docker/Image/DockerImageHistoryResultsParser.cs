@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DockerCliWrapper.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -13,7 +14,7 @@ namespace DockerCliWrapper.Docker.Image
 
             // By default the following columns are returned:
             // IMAGE, CREATED (AT), CREATED BY, SIZE, COMMENT
-            var lines = output.Split(_newLineSplitter, StringSplitOptions.RemoveEmptyEntries);
+            var lines = output.SplitLines();
 
             // Spacing is adjusted according to results so need to split row based on calculated lengths
             var headerLine = lines.First();

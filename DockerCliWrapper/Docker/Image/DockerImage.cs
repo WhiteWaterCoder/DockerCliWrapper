@@ -1,4 +1,5 @@
-﻿using DockerCliWrapper.Infrastructure;
+﻿using DockerCliWrapper.Docker.Constants;
+using DockerCliWrapper.Infrastructure;
 using System.Threading.Tasks;
 
 namespace DockerCliWrapper.Docker.Image
@@ -9,7 +10,6 @@ namespace DockerCliWrapper.Docker.Image
     /// </summary>
     public class DockerImage
     {
-        internal const string Command = "docker";
         internal const string DefaultArg = "image";
 
         private const string RemoveFlag = "rm";
@@ -63,7 +63,7 @@ namespace DockerCliWrapper.Docker.Image
 
         private async Task<Result> Remove(bool force)
         {
-            var shellResult = await _shellExecutor.Execute(Command, $" {DefaultArg} {RemoveFlag} {ImageName}{(force ? " -f" : "" )}");
+            var shellResult = await _shellExecutor.Execute(Commands.Docker, $" {DefaultArg} {RemoveFlag} {ImageName}{(force ? " -f" : "" )}");
 
             return new Result(shellResult.IsSuccessFull, shellResult.Error);
         }

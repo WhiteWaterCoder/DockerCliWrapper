@@ -1,4 +1,5 @@
-﻿using DockerCliWrapper.Extensions;
+﻿using DockerCliWrapper.Docker.Constants;
+using DockerCliWrapper.Extensions;
 using DockerCliWrapper.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -79,7 +80,7 @@ namespace DockerCliWrapper.Docker.Image
         /// <returns>A list of docker image history entries that fulfill the criteria specified on the object.</returns>
         public async Task<List<DockerImageHistoryResult>> Execute()
         {
-            var result = await _shellExecutor.Execute(DockerImage.Command, GenerateArguments());
+            var result = await _shellExecutor.Execute(Commands.Docker, GenerateArguments());
 
             if (!result.IsSuccessFull)
             {

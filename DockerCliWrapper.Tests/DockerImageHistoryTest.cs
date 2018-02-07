@@ -1,4 +1,5 @@
-﻿using DockerCliWrapper.Docker.Image;
+﻿using DockerCliWrapper.Docker.Constants;
+using DockerCliWrapper.Docker.Image;
 using DockerCliWrapper.Infrastructure;
 using FluentAssertions;
 using Moq;
@@ -17,7 +18,7 @@ namespace DockerCliWrapper.Tests
             var shellExecutor = new Mock<IShellExecutor>();
 
             shellExecutor
-                .Setup(e => e.Execute("docker", " image history -H=True -q imageName"))
+                .Setup(e => e.Execute(Commands.Docker, " image history -H=True -q imageName"))
                 .ReturnsAsync(new ShellExecuteResult(true, "ecea3d792cd1" + Environment.NewLine + "<missing>", ""));
 
             var dockerImage = new DockerImage("imageName", shellExecutor.Object);
@@ -47,7 +48,7 @@ namespace DockerCliWrapper.Tests
             var shellExecutor = new Mock<IShellExecutor>();
 
             shellExecutor
-                .Setup(e => e.Execute("docker", " image history -H=True --no-trunc imageName"))
+                .Setup(e => e.Execute(Commands.Docker, " image history -H=True --no-trunc imageName"))
                 .ReturnsAsync(new ShellExecuteResult(true, output.ToString(), ""));
 
             var dockerImage = new DockerImage("imageName", shellExecutor.Object);
@@ -76,7 +77,7 @@ namespace DockerCliWrapper.Tests
             var shellExecutor = new Mock<IShellExecutor>();
 
             shellExecutor
-                .Setup(e => e.Execute("docker", " image history -H=False imageName"))
+                .Setup(e => e.Execute(Commands.Docker, " image history -H=False imageName"))
                 .ReturnsAsync(new ShellExecuteResult(true, output.ToString(), ""));
 
             var dockerImage = new DockerImage("imageName", shellExecutor.Object);
@@ -100,7 +101,7 @@ namespace DockerCliWrapper.Tests
             var shellExecutor = new Mock<IShellExecutor>();
 
             shellExecutor
-                .Setup(e => e.Execute("docker", " image history -H=True nonExistentImage"))
+                .Setup(e => e.Execute(Commands.Docker, " image history -H=True nonExistentImage"))
                 .ReturnsAsync(new ShellExecuteResult(true, output.ToString(), ""));
 
             var dockerImage = new DockerImage("nonExistentImage", shellExecutor.Object);

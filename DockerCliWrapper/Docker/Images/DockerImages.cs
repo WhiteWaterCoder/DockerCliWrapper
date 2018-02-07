@@ -1,4 +1,5 @@
-﻿using DockerCliWrapper.Extensions;
+﻿using DockerCliWrapper.Docker.Constants;
+using DockerCliWrapper.Extensions;
 using DockerCliWrapper.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,6 @@ namespace DockerCliWrapper.Docker.Images
     /// </summary>
     public class DockerImages
     {
-        private const string Command = "docker";
         private const string DefaultArg = "images";
 
         private readonly IShellExecutor _shellExecutor;
@@ -182,7 +182,7 @@ namespace DockerCliWrapper.Docker.Images
         /// <returns>A list of docker images that fulfill the criteria specified on the object.</returns>
         public async Task<List<DockerImagesResult>> Execute()
         {
-            var result = await _shellExecutor.Execute(Command, GenerateArguments());
+            var result = await _shellExecutor.Execute(Commands.Docker, GenerateArguments());
 
             if (!result.IsSuccessFull)
             {

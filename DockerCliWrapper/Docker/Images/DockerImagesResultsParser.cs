@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DockerCliWrapper.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +13,7 @@ namespace DockerCliWrapper.Docker.Images
 
             // By default the following columns are returned:
             // REPOSITORY, TAG, IMAGE ID, CREATED, SIZE
-            var lines = output.Split(_newLineSplitter, StringSplitOptions.RemoveEmptyEntries);
+            var lines = output.SplitLines();
 
             // Spacing is adjusted according to results so need to split row based on calculated lengths
             var headerLine = lines.First();
