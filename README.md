@@ -36,7 +36,7 @@ Get the running status and details (as above) of both the client & server:
 
 Return a list of all images currently installed and do not truncate the data:
 
-`await new DockerImages().DoNotTruncate().ShowAll().Execute();`
+`await new DockerImages().DoNotTruncate(true).ShowAll(true).Execute();`
 
 ### Image
 
@@ -58,4 +58,4 @@ Checking the history of an image with the default settings:
 
 Chain additional settings:
 
-`await new DockerImage("hello-world").History().CreateOutputInHumanReadableFormat(false).DoNotTruncate().Execute()`
+`await new DockerImage("hello-world").History().CreateOutputInHumanReadableFormat(false).DoNotTruncate(true).Execute()`

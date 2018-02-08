@@ -26,7 +26,7 @@ namespace DockerCliWrapper.Tests
                 .Setup(e => e.Execute(Commands.Docker, " images -a"))
                 .ReturnsAsync(new ShellExecuteResult(true, output.ToString(), ""));
 
-            var result = await new DockerImages(shellExecutor.Object).ShowAll().Execute();
+            var result = await new DockerImages(shellExecutor.Object).ShowAll(true).Execute();
 
             result.Count.Should().Be(3);
             result[0].ImageId.Should().Be("f998ed08bddd");
