@@ -23,7 +23,7 @@ namespace DockerCliWrapper.Tests
 
             var dockerImage = new DockerImage("imageName", shellExecutor.Object);
 
-            var results = await dockerImage.History().BeQuiet().Execute();
+            var results = await dockerImage.History().BeQuiet(true).Execute();
 
             results.Count.Should().Be(2);
             results[0].ImageId.Should().Be("ecea3d792cd1");
@@ -53,7 +53,7 @@ namespace DockerCliWrapper.Tests
 
             var dockerImage = new DockerImage("imageName", shellExecutor.Object);
 
-            var results = await dockerImage.History().DoNotTruncate().Execute();
+            var results = await dockerImage.History().DoNotTruncate(true).Execute();
 
             results.Count.Should().Be(4);
             results[0].ImageId.Should().Be("sha256:ecea3d792cd143caccdf16935cfa1e4d0ec566a6d9e64eac25dfe9087c806702");

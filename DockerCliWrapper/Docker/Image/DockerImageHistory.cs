@@ -1,4 +1,5 @@
 ﻿using DockerCliWrapper.Docker.Constants;
+using DockerCliWrapper.Docker.Interfaces;
 using DockerCliWrapper.Extensions;
 using DockerCliWrapper.Infrastructure;
 using System;
@@ -9,7 +10,9 @@ using System.Threading.Tasks;
 
 namespace DockerCliWrapper.Docker.Image
 {
-    public class DockerImageHistory
+    public class DockerImageHistory : 
+        ITruncatableResults<DockerImageHistory>,
+        IQuietResults<DockerImageHistory>
     {
         private readonly DockerImage _image;
         private readonly IShellExecutor _shellExecutor;
@@ -55,22 +58,24 @@ namespace DockerCliWrapper.Docker.Image
         }
 
         /// <summary>
-        /// Don’t truncate output.
+        /// Set a flag denoting if the results should be truncated or not.
         /// </summary>
+        /// <param name="doNotTruncate">Do not truncate flag.</param>
         /// <returns>The current instance (fluent interface).</returns>
-        public DockerImageHistory DoNotTruncate()
+        public DockerImageHistory DoNotTruncate(bool doNotTruncate)
         {
-            _doNotTruncate = true;
+            _doNotTruncate = doNotTruncate;
             return this;
         }
 
         /// <summary>
-        /// Only populate the image IDs in the response.
+        /// Set a flag to denote if only image IDs should be populated in the response.
         /// </summary>
+        /// <param name="beQuiet">BeQuiet flag.</param>
         /// <returns>The current instance (fluent interface).</returns>
-        public DockerImageHistory BeQuiet()
+        public DockerImageHistory BeQuiet(bool beQuiet)
         {
-            _beQuiet = true;
+            _beQuiet = beQuiet;
             return this;
         }
 

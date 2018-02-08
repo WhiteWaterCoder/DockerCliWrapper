@@ -1,4 +1,5 @@
 ﻿using DockerCliWrapper.Docker.Constants;
+using DockerCliWrapper.Docker.Interfaces;
 using DockerCliWrapper.Extensions;
 using DockerCliWrapper.Infrastructure;
 using System;
@@ -13,7 +14,9 @@ namespace DockerCliWrapper.Docker.Images
     /// Read operation for all local images. <see cref="https://docs.docker.com/engine/reference/commandline/images/"/> 
     /// for full CLI details.
     /// </summary>
-    public class DockerImages
+    public class DockerImages : 
+        ITruncatableResults<DockerImages>, 
+        IQuietResults<DockerImages>
     {
         private const string DefaultArg = "images";
 
@@ -31,7 +34,6 @@ namespace DockerCliWrapper.Docker.Images
         public DockerImages()
             : this(ShellExecutor.Instance)
         {
-
         }
 
         internal DockerImages(IShellExecutor shellExecutor)
@@ -43,22 +45,24 @@ namespace DockerCliWrapper.Docker.Images
         }
 
         /// <summary>
-        /// Show all images (default hides intermediate images)
+        /// Set a flag to denote if all images should be shown (default-false-hides intermediate images).
         /// </summary>
+        /// <param name="showAll">ShowAll flag.</param>
         /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages ShowAll()
+        public DockerImages ShowAll(bool showAll)
         {
-            _showAll = true;
+            _showAll = showAll;
             return this;
         }
 
         /// <summary>
-        /// Returns the digests data for the images.
+        /// Set a flag to denote if digests data should be returned.
         /// </summary>
+        /// <param name="showDigests">ShowDigests flag.</param>
         /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages ShowDigests()
+        public DockerImages ShowDigests(bool showDigests)
         {
-            _showDigests = true;
+            _showDigests = showDigests;
             return this;
         }
 
@@ -133,22 +137,24 @@ namespace DockerCliWrapper.Docker.Images
         }
 
         /// <summary>
-        /// Don’t truncate output.
+        /// Set a flag denoting if the results should be truncated or not.
         /// </summary>
+        /// <param name="doNotTruncate">Do not truncate flag.</param>
         /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages DoNotTruncate()
+        public DockerImages DoNotTruncate(bool doNotTruncate)
         {
-            _doNotTruncate = true;
+            _doNotTruncate = doNotTruncate;
             return this;
         }
 
         /// <summary>
-        /// Only populate the image IDs in the response.
+        /// Set a flag to denote if only image IDs should be populated in the response.
         /// </summary>
+        /// <param name="beQuiet">BeQuiet flag.</param>
         /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages BeQuiet()
+        public DockerImages BeQuiet(bool beQuiet)
         {
-            _beQuiet = true;
+            _beQuiet = beQuiet;
             return this;
         }
 
