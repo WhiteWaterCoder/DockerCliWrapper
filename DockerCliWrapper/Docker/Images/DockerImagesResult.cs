@@ -5,7 +5,7 @@ namespace DockerCliWrapper.Docker.Images
 {
     public class DockerImagesResult : IResult
     {
-        public string ImageId { get; }
+        public string Id { get; }
         public string Repository { get; }
         public string Tag { get; }
         public string Digest { get; }
@@ -13,14 +13,14 @@ namespace DockerCliWrapper.Docker.Images
         public DateTime CreatedAt { get; }
         public string Size { get; }
 
-        public DockerImagesResult(string imageId)
+        public DockerImagesResult(string id)
         {
-            ImageId = imageId;
+            Id = id;
         }
 
-        public DockerImagesResult(string imageId, string repository, string tag, string digest, string createdSince, DateTime createdAt, string size)
+        public DockerImagesResult(string id, string repository, string tag, string digest, string createdSince, DateTime createdAt, string size)
         {
-            ImageId = imageId;
+            Id = id;
             Repository = repository;
             Tag = tag;
             Digest = digest;
@@ -33,7 +33,7 @@ namespace DockerCliWrapper.Docker.Images
         {
             var result = obj as DockerImagesResult;
             return result != null &&
-                   ImageId == result.ImageId &&
+                   Id == result.Id &&
                    Repository == result.Repository &&
                    Tag == result.Tag &&
                    Digest == result.Digest &&
@@ -45,7 +45,7 @@ namespace DockerCliWrapper.Docker.Images
         public override int GetHashCode()
         {
             var hashCode = -2026909135;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ImageId);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Id);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Repository);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Tag);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Digest);
@@ -57,7 +57,7 @@ namespace DockerCliWrapper.Docker.Images
 
         public override string ToString()
         {
-            return $"{ImageId} - {Repository}";
+            return $"{Id} - {Repository}";
         }
     }
 }

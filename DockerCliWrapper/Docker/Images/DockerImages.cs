@@ -1,12 +1,9 @@
-﻿using DockerCliWrapper.Docker.Constants;
-using DockerCliWrapper.Docker.Interfaces;
-using DockerCliWrapper.Extensions;
+﻿using DockerCliWrapper.Extensions;
 using DockerCliWrapper.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DockerCliWrapper.Docker.Images
 {
@@ -14,20 +11,10 @@ namespace DockerCliWrapper.Docker.Images
     /// Read operation for all local images. <see cref="https://docs.docker.com/engine/reference/commandline/images/"/> 
     /// for full CLI details.
     /// </summary>
-    public class DockerImages : 
-        ITruncatableResults<DockerImages>, 
-        IQuietResults<DockerImages>
-    {
-        private const string DefaultArg = "images";
-
-        private readonly IShellExecutor _shellExecutor;
-
-        private bool _showAll;
+    public class DockerImages : ExtendedSearchableBase<DockerImages, DockerImagesResult>
+    {        
         private bool _showDigests;
-        private bool _doNotTruncate;
-        private IDictionary<string, string> _filters;
         private List<GoFormattingPlaceHolders> _placeHolders;
-        private bool _beQuiet;
         private string _repository;
         private string _tag;
 
@@ -37,22 +24,10 @@ namespace DockerCliWrapper.Docker.Images
         }
 
         internal DockerImages(IShellExecutor shellExecutor)
+            : base(shellExecutor)
         {
-            _shellExecutor = shellExecutor;
-
             _filters = new Dictionary<string, string>();
             _placeHolders = new List<GoFormattingPlaceHolders>();
-        }
-
-        /// <summary>
-        /// Set a flag to denote if all images should be shown (default-false-hides intermediate images).
-        /// </summary>
-        /// <param name="showAll">ShowAll flag.</param>
-        /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages ShowAll(bool showAll)
-        {
-            _showAll = showAll;
-            return this;
         }
 
         /// <summary>
@@ -65,61 +40,7 @@ namespace DockerCliWrapper.Docker.Images
             _showDigests = showDigests;
             return this;
         }
-
-        /// <summary>
-        /// Add a filter that will display untagged images that are the leaves of the images tree (not intermediary layers). 
-        /// These images occur when a new build of an image takes the repo:tag away from the image ID, leaving it as <none>:<none> or untagged.
-        /// </summary>
-        /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages AddDanglingFilter()
-        {
-            _filters.Add("dangling", "true");
-            return this;
-        }
-
-        /// <summary>
-        /// Add a filter that matches images based on the presence of a label alone or a label and a value.
-        /// </summary>
-        /// <param name="label"></param>
-        /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages AddLabelFilter(string label)
-        {
-            _filters.Add("label", label);
-            return this;
-        }
-
-        /// <summary>
-        /// Add a filter that shows only images created before the image with given id or reference.
-        /// </summary>
-        /// <param name="before"></param>
-        /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages AddBeforeFilter(string before)
-        {
-            _filters.Add("before", before);
-            return this;
-        }
-
-        /// <summary>
-        /// Add a filter that shows only images created before the image with given id or reference. 
-        /// </summary>
-        /// <param name="since"></param>
-        /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages AddSinceFilter(string since)
-        {
-            _filters.Add("since", since);
-            return this;
-        }
-
-        /// <summary>
-        /// Add a filter that shows only images whose reference matches the specified pattern.
-        /// </summary>
-        /// <param name="pattern">The pattern value.</param>
-        /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages AddReferenceFilter(string pattern)
-        {
-            throw new NotImplementedException("Not yet implemented - do not understand the syntax");
-        }
-
+        
         /// <summary>
         /// Pretty-print images using a Go template.
         /// </summary>
@@ -135,29 +56,7 @@ namespace DockerCliWrapper.Docker.Images
             _placeHolders = placeHolders;
             return this;
         }
-
-        /// <summary>
-        /// Set a flag denoting if the results should be truncated or not.
-        /// </summary>
-        /// <param name="doNotTruncate">Do not truncate flag.</param>
-        /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages DoNotTruncate(bool doNotTruncate)
-        {
-            _doNotTruncate = doNotTruncate;
-            return this;
-        }
-
-        /// <summary>
-        /// Set a flag to denote if only image IDs should be populated in the response.
-        /// </summary>
-        /// <param name="beQuiet">BeQuiet flag.</param>
-        /// <returns>The current instance (fluent interface).</returns>
-        public DockerImages BeQuiet(bool beQuiet)
-        {
-            _beQuiet = beQuiet;
-            return this;
-        }
-
+        
         /// <summary>
         /// Restricts the list to all images that match the argument.
         /// </summary>
@@ -182,61 +81,40 @@ namespace DockerCliWrapper.Docker.Images
             return this;
         }
 
-        /// <summary>
-        /// Execute the object based on its current state.
-        /// </summary>
-        /// <returns>A list of docker images that fulfill the criteria specified on the object.</returns>
-        public async Task<List<DockerImagesResult>> Execute()
+        protected override List<DockerImagesResult> DoSearch(string output)
         {
-            var result = await _shellExecutor.Execute(Commands.Docker, GenerateArguments());
-
-            if (!result.IsSuccessFull)
-            {
-                //TODO: Log
-                return new List<DockerImagesResult>();
-            }
-
             if (_beQuiet)
             {
-                return ResultsParser.ParseQuietResult(result.Output, i => new DockerImagesResult(i));
+                return ResultsParser.ParseQuietResult(output, i => new DockerImagesResult(i));
             }
 
             if (_placeHolders.Any())
             {
-                return ResultsParser.ParseFormattedResult(result.Output, 
+                return ResultsParser.ParseFormattedResult(output, 
                     (imageId, repository, tag, digest, createdSince, createdAt, size) => new DockerImagesResult(imageId, repository, tag, digest, createdSince, createdAt, size),
                     _placeHolders);
             }
 
-            return DockerImagesResultsParser.ParseResult(result.Output);
+            return DockerImagesResultsParser.ParseResult(output);
         }
 
-        private string GenerateArguments()
+        protected override string DefaultArg => " images";
+
+        protected override DockerImages GetThis()
         {
-            var arguments = new StringBuilder();
+            return this;
+        }
 
-            arguments.Append(" images");
-
-            if (_showAll)
-            {
-                arguments.Append(" -a");
-            }
+        protected override void AppendArguments(StringBuilder arguments)
+        {
+            base.AppendArguments(arguments);
 
             if (_showDigests)
             {
                 arguments.Append(" -digests");
             }
 
-            foreach(var filter in _filters)
-            {
-                arguments.AppendFormat(" -f \"{0}={1}\"", filter.Key, filter.Value);
-            }
-
             arguments.AppendGoFormattingArguments(_placeHolders);
-            arguments.AppendNoTruncArgument(_doNotTruncate);
-            arguments.AppendQuietArgument(_beQuiet);
-
-            return arguments.ToString();
         }
     }
 }

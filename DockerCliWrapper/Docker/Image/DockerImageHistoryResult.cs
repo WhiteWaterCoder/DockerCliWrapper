@@ -5,20 +5,20 @@ namespace DockerCliWrapper.Docker.Image
 {
     public class DockerImageHistoryResult : IResult
     {
-        public string ImageId { get; }
+        public string Id { get; }
         public string CreatedSince { get; }
         public DateTime CreatedAt { get; }
         public string CreatedBy { get; }
         public string Size { get; }
         public string Comment { get; }
 
-        public DockerImageHistoryResult(string imageId)
+        public DockerImageHistoryResult(string id)
         {
-            ImageId = imageId;
+            Id = id;
         }
 
-        public DockerImageHistoryResult(string imageId, string createdSince, DateTime createdAt, string createdBy, string size, string comment) 
-            : this(imageId)
+        public DockerImageHistoryResult(string id, string createdSince, DateTime createdAt, string createdBy, string size, string comment) 
+            : this(id)
         {
             CreatedSince = createdSince;
             CreatedAt = createdAt;
@@ -31,7 +31,7 @@ namespace DockerCliWrapper.Docker.Image
         {
             var result = obj as DockerImageHistoryResult;
             return result != null &&
-                   ImageId == result.ImageId &&
+                   Id == result.Id &&
                    CreatedSince == result.CreatedSince &&
                    CreatedAt == result.CreatedAt &&
                    Size == result.Size &&
@@ -41,7 +41,7 @@ namespace DockerCliWrapper.Docker.Image
         public override int GetHashCode()
         {
             var hashCode = -96956286;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ImageId);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Id);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CreatedSince);
             hashCode = hashCode * -1521134295 + CreatedAt.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Size);
@@ -51,7 +51,7 @@ namespace DockerCliWrapper.Docker.Image
 
         public override string ToString()
         {
-            return ImageId;
+            return Id;
         }
     }
 }

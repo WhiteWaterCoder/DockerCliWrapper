@@ -18,20 +18,20 @@ namespace DockerCliWrapper.Tests
             var shellExecutor = new Mock<IShellExecutor>();
 
             shellExecutor
-                .Setup(e => e.Execute(Commands.Docker, " image history -H=True -q imageName"))
+                .Setup(e => e.Execute(Commands.Docker, " image history -q -H=True imageName"))
                 .ReturnsAsync(new ShellExecuteResult(true, "ecea3d792cd1" + Environment.NewLine + "<missing>", ""));
 
             var dockerImage = new DockerImage("imageName", shellExecutor.Object);
 
-            var results = await dockerImage.History().BeQuiet(true).Execute();
+            var results = await dockerImage.History().BeQuiet(true).SearchAsync();
 
             results.Count.Should().Be(2);
-            results[0].ImageId.Should().Be("ecea3d792cd1");
+            results[0].Id.Should().Be("ecea3d792cd1");
             results[0].Comment.Should().BeNullOrEmpty();
             results[0].CreatedAt.Should().Be(DateTime.MinValue);
             results[0].CreatedSince.Should().BeNullOrEmpty();
             results[0].Size.Should().BeNullOrEmpty();
-            results[1].ImageId.Should().Be("<missing>");
+            results[1].Id.Should().Be("<missing>");
             results[0].Size.Should().BeNullOrEmpty();
         }
 
@@ -48,15 +48,15 @@ namespace DockerCliWrapper.Tests
             var shellExecutor = new Mock<IShellExecutor>();
 
             shellExecutor
-                .Setup(e => e.Execute(Commands.Docker, " image history -H=True --no-trunc imageName"))
+                .Setup(e => e.Execute(Commands.Docker, " image history --no-trunc -H=True imageName"))
                 .ReturnsAsync(new ShellExecuteResult(true, output.ToString(), ""));
 
             var dockerImage = new DockerImage("imageName", shellExecutor.Object);
 
-            var results = await dockerImage.History().DoNotTruncate(true).Execute();
+            var results = await dockerImage.History().DoNotTruncate(true).SearchAsync();
 
             results.Count.Should().Be(4);
-            results[0].ImageId.Should().Be("sha256:ecea3d792cd143caccdf16935cfa1e4d0ec566a6d9e64eac25dfe9087c806702");
+            results[0].Id.Should().Be("sha256:ecea3d792cd143caccdf16935cfa1e4d0ec566a6d9e64eac25dfe9087c806702");
             results[0].CreatedBy.Should().Be("cmd /S /C #(nop)  CMD [\"cmd\" \" / C\" \"type C:\\hello.txt\"]");
             results[0].Comment.Should().Be("Comment1");
             results[0].CreatedAt.Should().Be(DateTime.MinValue);
@@ -82,10 +82,10 @@ namespace DockerCliWrapper.Tests
 
             var dockerImage = new DockerImage("imageName", shellExecutor.Object);
 
-            var results = await dockerImage.History().CreateOutputInHumanReadableFormat(false).Execute();
+            var results = await dockerImage.History().CreateOutputInHumanReadableFormat(false).SearchAsync();
 
             results.Count.Should().Be(4);
-            results[0].ImageId.Should().Be("ecea3d792cd1");
+            results[0].Id.Should().Be("ecea3d792cd1");
             results[0].CreatedBy.Should().Be("cmd /S /C #(nop)  CMD [\"cmd\" \" / C\" \"type C:\\…");
             results[0].Comment.Should().Be("Comment1");
             results[0].CreatedAt.Should().Be(new DateTime(2018, 1, 8, 20, 7, 42));
@@ -106,7 +106,7 @@ namespace DockerCliWrapper.Tests
 
             var dockerImage = new DockerImage("nonExistentImage", shellExecutor.Object);
 
-            var results = await dockerImage.History().Execute();
+            var results = await dockerImage.History().SearchAsync();
 
             results.Count.Should().Be(0);
         }

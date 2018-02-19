@@ -2,6 +2,6 @@
 {
     public interface IResult
     {
-        string ImageId { get; }
+        string Id { get; }
     }
 }

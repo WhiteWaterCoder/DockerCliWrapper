@@ -59,3 +59,9 @@ Checking the history of an image with the default settings:
 Chain additional settings:
 
 `await new DockerImage("hello-world").History().CreateOutputInHumanReadableFormat(false).DoNotTruncate(true).Execute()`
+
+### Containers
+
+Return a list of all containers and do not truncate the data:
+
+`await new DockerImages().DoNotTruncate(true).ShowAll(true).Execute();`
