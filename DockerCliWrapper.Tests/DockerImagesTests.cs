@@ -26,10 +26,10 @@ namespace DockerCliWrapper.Tests
                 .Setup(e => e.Execute(Commands.Docker, " images -a"))
                 .ReturnsAsync(new ShellExecuteResult(true, output.ToString(), ""));
 
-            var result = await new DockerImages(shellExecutor.Object).ShowAll(true).Execute();
+            var result = await new DockerImages(shellExecutor.Object).ShowAll(true).SearchAsync();
 
             result.Count.Should().Be(3);
-            result[0].ImageId.Should().Be("f998ed08bddd");
+            result[0].Id.Should().Be("f998ed08bddd");
             result[0].Repository.Should().Be("microsoft/aspnetcore-build");
             result[0].Tag.Should().Be("2.0-nanoserver-1709");
             result[0].CreatedSince.Should().Be("3 weeks ago");

@@ -1,5 +1,9 @@
 ﻿namespace DockerCliWrapper.Docker.Interfaces
 {
+    /// <summary>
+    /// Results that return their data truncated by default but can be changed.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface ITruncatableResults<T>
     {
         /// <summary>

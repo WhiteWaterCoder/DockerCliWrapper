@@ -1,31 +1,23 @@
-﻿using DockerCliWrapper.Docker.Constants;
-using DockerCliWrapper.Docker.Interfaces;
-using DockerCliWrapper.Extensions;
+﻿using DockerCliWrapper.Extensions;
 using DockerCliWrapper.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DockerCliWrapper.Docker.Image
 {
-    public class DockerImageHistory : 
-        ITruncatableResults<DockerImageHistory>,
-        IQuietResults<DockerImageHistory>
+    public class DockerImageHistory : SearchableBase<DockerImageHistory, DockerImageHistoryResult>
     {
         private readonly DockerImage _image;
-        private readonly IShellExecutor _shellExecutor;
 
         private List<GoFormattingPlaceHolders> _placeHolders;
         private bool _humanReadable = true;
-        private bool _doNotTruncate;
-        private bool _beQuiet;
 
         internal DockerImageHistory(DockerImage image, IShellExecutor shellExecutor)
+            : base(shellExecutor)
         {
             _image = image;
-            _shellExecutor = shellExecutor;
 
             _placeHolders = new List<GoFormattingPlaceHolders>();
         }
@@ -57,73 +49,37 @@ namespace DockerCliWrapper.Docker.Image
             return this;
         }
 
-        /// <summary>
-        /// Set a flag denoting if the results should be truncated or not.
-        /// </summary>
-        /// <param name="doNotTruncate">Do not truncate flag.</param>
-        /// <returns>The current instance (fluent interface).</returns>
-        public DockerImageHistory DoNotTruncate(bool doNotTruncate)
+        protected override DockerImageHistory GetThis()
         {
-            _doNotTruncate = doNotTruncate;
             return this;
         }
 
-        /// <summary>
-        /// Set a flag to denote if only image IDs should be populated in the response.
-        /// </summary>
-        /// <param name="beQuiet">BeQuiet flag.</param>
-        /// <returns>The current instance (fluent interface).</returns>
-        public DockerImageHistory BeQuiet(bool beQuiet)
+        protected override string DefaultArg => $" {DockerImage.DefaultArg} history";
+
+        protected override List<DockerImageHistoryResult> DoSearch(string output)
         {
-            _beQuiet = beQuiet;
-            return this;
-        }
-
-        /// <summary>
-        /// Execute the object based on its current state.
-        /// </summary>
-        /// <returns>A list of docker image history entries that fulfill the criteria specified on the object.</returns>
-        public async Task<List<DockerImageHistoryResult>> Execute()
-        {
-            var result = await _shellExecutor.Execute(Commands.Docker, GenerateArguments());
-
-            if (!result.IsSuccessFull)
-            {
-                //TODO: Log
-                return new List<DockerImageHistoryResult>();
-            }
-
             if (_beQuiet)
             {
-                return ResultsParser.ParseQuietResult(result.Output, i => new DockerImageHistoryResult(i));
+                return ResultsParser.ParseQuietResult(output, i => new DockerImageHistoryResult(i));
             }
 
             if (_placeHolders.Any())
             {
-                return ResultsParser.ParseFormattedResult(result.Output,
+                return ResultsParser.ParseFormattedResult(output,
                         (imageId, _, __, ___, createdSince, createdAt, size) => new DockerImageHistoryResult(imageId, createdSince, createdAt, "", size, ""),
                         _placeHolders);
             }
 
-            return DockerImageHistoryResultsParser.ParseResult(result.Output, _humanReadable);
+            return DockerImageHistoryResultsParser.ParseResult(output, _humanReadable);
         }
 
-        private string GenerateArguments()
+        protected override void AppendArguments(StringBuilder arguments)
         {
-            var arguments = new StringBuilder();
-
-            arguments.Append($" {DockerImage.DefaultArg}");
-            arguments.Append(" history");
-
             arguments.AppendFormat($" -H={_humanReadable}");
-            
+
             arguments.AppendGoFormattingArguments(_placeHolders);
-            arguments.AppendNoTruncArgument(_doNotTruncate);
-            arguments.AppendQuietArgument(_beQuiet);
 
             arguments.Append($" {_image}");
-
-            return arguments.ToString();
         }
     }
 }

@@ -1,5 +1,9 @@
 ﻿namespace DockerCliWrapper.Docker.Interfaces
 {
+    /// <summary>
+    /// Results that return a whole set by default but can be set to return only their identifier instead.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IQuietResults<T>
     {
         /// <summary>
