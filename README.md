@@ -26,42 +26,18 @@ Before you use the library you need to make sure that Docker is running locally 
   
 The wrapper uses fluent syntax where possible and is fully asnyc. At the time of writing, only the following functionality is available:
 
-### Status
+### Examples
 
 Get the running status and details (as above) of both the client & server:
 
 `await new DockerStatus();`
 
-### Images
-
 Return a list of all images currently installed and do not truncate the data:
 
 `await new DockerImages().DoNotTruncate(true).ShowAll(true).Execute();`
 
-### Image
-
-#### Remove Image
-
-Remove the image called `hello-world`. Returns true if successful, otherwise false along with the error message:
-
-`await new DockerImage("hello-world").Remove(out string s)`
-
-If a container based on that image already exists you will not be able to remove it unless you force remove it:
-
-`await new DockerImage("hello-world").ForceRemove(out string s)`
-
-#### Image History
-
-Checking the history of an image with the default settings:
-
-`await new DockerImage("hello-world").History().Execute()`
-
-Chain additional settings:
-
-`await new DockerImage("hello-world").History().CreateOutputInHumanReadableFormat(false).DoNotTruncate(true).Execute()`
-
-### Containers
-
 Return a list of all containers and do not truncate the data:
 
 `await new DockerImages().DoNotTruncate(true).ShowAll(true).Execute();`
+
+Check out the Wiki for full documentation and examples.
