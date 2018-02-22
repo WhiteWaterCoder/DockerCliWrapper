@@ -4,12 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Andreas Antoniou</Authors>
     <Company />
-    <AssemblyVersion>0.0.7.0</AssemblyVersion>
-    <FileVersion>0.0.7.0</FileVersion>
-    <Version>0.0.7</Version>
+    <AssemblyVersion>0.0.8.0</AssemblyVersion>
+    <FileVersion>0.0.8.0</FileVersion>
+    <Version>0.0.8</Version>
     <PackageProjectUrl>https://github.com/WhiteWaterCoder/DockerCliWrapper</PackageProjectUrl>
     <Description>A c# wrapper for the Docker CLI.</Description>
-    <PackageReleaseNotes>Added container listing support.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added container actions support.</PackageReleaseNotes>
     <PackageTags>Docker CLI</PackageTags>
     <RepositoryUrl>https://github.com/WhiteWaterCoder/DockerCliWrapper</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
