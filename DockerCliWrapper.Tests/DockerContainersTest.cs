@@ -3,6 +3,7 @@ using DockerCliWrapper.Docker.Container;
 using DockerCliWrapper.Infrastructure;
 using FluentAssertions;
 using Moq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;

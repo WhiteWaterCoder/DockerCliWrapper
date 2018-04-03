@@ -1,5 +1,7 @@
 ﻿using DockerCliWrapper.Extensions;
+using System;
 using System.Diagnostics;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace DockerCliWrapper.Infrastructure
@@ -10,7 +12,7 @@ namespace DockerCliWrapper.Infrastructure
 
         private readonly Process _process;
 
-        private ShellExecutor()
+        public ShellExecutor()
         {
             _process = new Process();
 
@@ -34,6 +36,37 @@ namespace DockerCliWrapper.Infrastructure
             await _process.WaitForExitAsync();
 
             return new ShellExecuteResult(string.IsNullOrEmpty(error), output, error);
+        }
+
+        public IObservable<string> ObserveStandardOutput(string command, string arguments)
+        {
+            var process = new Process
+            {
+                EnableRaisingEvents = true
+            };
+
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            
+            process.StartInfo.FileName = command;
+            process.StartInfo.Arguments = arguments;
+            process.Start();
+
+            var received = Observable
+                .FromEventPattern<DataReceivedEventHandler, DataReceivedEventArgs>(
+                    handler => handler.Invoke,
+                    h => process.OutputDataReceived += h,
+                    h => process.OutputDataReceived -= h)
+                .TakeUntil(Observable.FromEventPattern(
+                    h => process.Exited += h,
+                    h => process.Exited -= h))
+                .Select(e => e.EventArgs.Data);
+
+            process.BeginOutputReadLine();
+
+            return received;
         }
 
         public void Dispose()
