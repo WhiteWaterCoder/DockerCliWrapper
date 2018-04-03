@@ -16,6 +16,7 @@ namespace DockerCliWrapper.Docker.Container
         private const string StartArg = "start";
         private const string RestartArg = "restart";
         private const string PauseArg = "pause";
+        private const string UnpauseArg = "unpause";
         private const string KillArg = "kill";
         private const string InspectArg = "inspect";
 
@@ -96,6 +97,15 @@ namespace DockerCliWrapper.Docker.Container
         public async Task<Result> Pause()
         {
             return await _shellExecutor.ExecuteWithResult($"{DefaultArg} {PauseArg} {ContainerId}");
+        }
+
+        /// <summary>
+        /// Unpause all processes within the container.
+        /// </summary>
+        /// <returns>True if the container process was unpaused successfully, otherwise false along with the error message.</returns>
+        public async Task<Result> Unpause()
+        {
+            return await _shellExecutor.ExecuteWithResult($"{DefaultArg} {UnpauseArg} {ContainerId}");
         }
 
         /// <summary>

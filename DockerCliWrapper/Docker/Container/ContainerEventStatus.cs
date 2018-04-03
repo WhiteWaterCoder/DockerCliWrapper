@@ -6,6 +6,7 @@
         Start,
         Stop,
         Die,
+        Kill,
         Pause,
         Unpause
     }
