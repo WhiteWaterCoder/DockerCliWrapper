@@ -25,8 +25,12 @@ namespace DockerCliWrapper.Docker.Image
             {
                 switch (status)
                 {
-                    case "pull": return ImageEventStatus.Pull;
                     case "delete": return ImageEventStatus.Delete;
+                    case "import":return ImageEventStatus.Import;
+                    case "load": return ImageEventStatus.Load;
+                    case "pull": return ImageEventStatus.Pull;
+                    case "push": return ImageEventStatus.Push;
+                    case "save": return ImageEventStatus.Save;
                     case "tag": return ImageEventStatus.Tag;
                     case "untag": return ImageEventStatus.Untag;
                     default: return ImageEventStatus.Unknown;

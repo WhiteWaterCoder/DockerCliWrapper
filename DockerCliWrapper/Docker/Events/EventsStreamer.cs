@@ -22,7 +22,6 @@ namespace DockerCliWrapper.Docker.Events
             _mainStream = shellExecutor.ObserveStandardOutput("docker", " events --format \"{{json .}}\"")
                                        .SubscribeOn(NewThreadScheduler.Default)
                                        .Where(e => { return e.StartsWith("{ \"status\":"); });
-                                       //.Select(json => { return JsonConvert.DeserializeObject<ContainerEvent>(json); });
         }
 
         public IObservable<ContainerEvent> GetContainerEventsObservable()

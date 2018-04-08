@@ -114,6 +114,10 @@ namespace DockerCliWrapper.Tests
                 testScheduler.Schedule(TimeSpan.FromTicks(14), () => outputStream.OnNext("{\"status\":\"pause\",\"id\":\"c82386cd35b33d95559b6f4bb217da1190e2754f42459b4cc9440f0fb69f5a50\",\"from\":\"dc360deba4fc\",\"Type\":\"container\",\"Action\":\"pause\",\"Actor\":{ \"ID\":\"c82386cd35b33d95559b6f4bb217da1190e2754f42459b4cc9440f0fb69f5a50\",\"Attributes\":{ \"image\":\"dc360deba4fc\",\"name\":\"nifty_liskov\"} },\"scope\":\"local\",\"time\":1522704207,\"timeNano\":1522704207487173200}"));
                 // unpause
                 testScheduler.Schedule(TimeSpan.FromTicks(15), () => outputStream.OnNext("{\"status\":\"unpause\",\"id\":\"c82386cd35b33d95559b6f4bb217da1190e2754f42459b4cc9440f0fb69f5a50\",\"from\":\"dc360deba4fc\",\"Type\":\"container\",\"Action\":\"unpause\",\"Actor\":{ \"ID\":\"c82386cd35b33d95559b6f4bb217da1190e2754f42459b4cc9440f0fb69f5a50\",\"Attributes\":{ \"image\":\"dc360deba4fc\",\"name\":\"nifty_liskov\"} },\"scope\":\"local\",\"time\":1522704224,\"timeNano\":1522704224102358100}"));
+                //destroy
+                testScheduler.Schedule(TimeSpan.FromTicks(16), () => outputStream.OnNext("{\"status\":\"destroy\",\"id\":\"07e3caf36749ae53668119ca34da1e6667e8dbefd8ab9b8b20f0b69f5fc6a22a\",\"from\":\"sampledockerapp\",\"Type\":\"container\",\"Action\":\"destroy\",\"Actor\":{ \"ID\":\"07e3caf36749ae53668119ca34da1e6667e8dbefd8ab9b8b20f0b69f5fc6a22a\",\"Attributes\":{ \"com.docker.compose.config-hash\":\"375101fe5fa9794eeae29416c129d8bb6b324c5bbc7afe0f358a908766cd866d\",\"com.docker.compose.container-number\":\"1\",\"com.docker.compose.oneoff\":\"False\",\"com.docker.compose.project\":\"repos\",\"com.docker.compose.service\":\"sampledockerapp\",\"com.docker.compose.version\":\"1.18.0\",\"image\":\"sampledockerapp\",\"name\":\"repos_sampledockerapp_1\"} },\"scope\":\"local\",\"time\":1523089719,\"timeNano\":1523089719273580200}"));
+                //create
+                testScheduler.Schedule(TimeSpan.FromTicks(17), () => outputStream.OnNext("{\"status\":\"create\",\"id\":\"44eb386b5e509977426c369f3c57b99712b14c3ba2eff9bf5206326b50d4733f\",\"from\":\"8999c0c122da\",\"Type\":\"container\",\"Action\":\"create\",\"Actor\":{ \"ID\":\"44eb386b5e509977426c369f3c57b99712b14c3ba2eff9bf5206326b50d4733f\",\"Attributes\":{ \"image\":\"8999c0c122da\",\"name\":\"hungry_vaughan\"} },\"scope\":\"local\",\"time\":1523089889,\"timeNano\":1523089889551458100}"));
 
                 var subscription = new EventsStreamer(shellExecutor.Object).GetContainerEventsObservable()
                                                  .ObserveOn(Scheduler.Default)
@@ -171,6 +175,14 @@ namespace DockerCliWrapper.Tests
                 containerEvents.Count.Should().Be(10);
                 containerEvents.ElementAt(9).ShortId.Should().Be("c82386cd35b3");
                 containerEvents.ElementAt(9).EventStatus.Should().Be(ContainerEventStatus.Unpause);
+                Thread.Sleep(100);
+                containerEvents.Count.Should().Be(11);
+                containerEvents.ElementAt(10).ShortId.Should().Be("c82386cd35b3");
+                containerEvents.ElementAt(10).EventStatus.Should().Be(ContainerEventStatus.Destroy);
+                Thread.Sleep(100);
+                containerEvents.Count.Should().Be(12);
+                containerEvents.ElementAt(11).ShortId.Should().Be("c82386cd35b3");
+                containerEvents.ElementAt(11).EventStatus.Should().Be(ContainerEventStatus.Create);
 
                 resetEvent.Set();
             });

@@ -25,12 +25,29 @@ namespace DockerCliWrapper.Docker.Container
             {
                 switch(status)
                 {
+                    case "attach": return ContainerEventStatus.Attach;
+                    case "commit": return ContainerEventStatus.Commit;
+                    case "copy": return ContainerEventStatus.Copy;
+                    case "create": return ContainerEventStatus.Create;
+                    case "destroy": return ContainerEventStatus.Destroy;
+                    case "detach": return ContainerEventStatus.Detach;
+                    case "die": return ContainerEventStatus.Die;
+                    case "exec_create": return ContainerEventStatus.ExecCreate;
+                    case "exec_detach": return ContainerEventStatus.ExecDetach;
+                    case "exec_start": return ContainerEventStatus.ExecStart;
+                    case "export": return ContainerEventStatus.Export;
+                    case "health_status": return ContainerEventStatus.HealthStatus;
+                    case "kill": return ContainerEventStatus.Kill;
+                    case "oom": return ContainerEventStatus.Oom;
+                    case "pause": return ContainerEventStatus.Pause;
+                    case "rename": return ContainerEventStatus.Rename;
+                    case "resize": return ContainerEventStatus.Resize;
+                    case "restart": return ContainerEventStatus.Restart;
                     case "start": return ContainerEventStatus.Start;
                     case "stop": return ContainerEventStatus.Stop;
-                    case "die": return ContainerEventStatus.Die;
-                    case "kill": return ContainerEventStatus.Kill;
-                    case "pause": return ContainerEventStatus.Pause;
+                    case "top": return ContainerEventStatus.Top;
                     case "unpause": return ContainerEventStatus.Unpause;
+                    case "update": return ContainerEventStatus.Update;
                     default: return ContainerEventStatus.Unknown;
                 }
             }
