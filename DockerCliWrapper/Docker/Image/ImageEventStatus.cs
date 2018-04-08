@@ -2,10 +2,14 @@
 {
     public enum ImageEventStatus
     {
-        Tag,
-        Untag,
+        Unknown,
         Delete,
+        Import,
+        Load,
         Pull,
-        Unknown
+        Push,
+        Save,
+        Tag,
+        Untag
     }
 }

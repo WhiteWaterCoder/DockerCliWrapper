@@ -3,11 +3,28 @@
     public enum ContainerEventStatus
     {
         Unknown,
+        Attach,
+        Commit,
+        Copy,
+        Create,
+        Destroy,
+        Detach,
+        Die,
+        ExecCreate,
+        ExecDetach,
+        ExecStart,
+        Export,
+        HealthStatus,
+        Kill,
+        Oom,
+        Pause,
+        Rename,
+        Resize,
+        Restart,
         Start,
         Stop,
-        Die,
-        Kill,
-        Pause,
-        Unpause
+        Top,
+        Unpause,
+        Update
     }
 }
