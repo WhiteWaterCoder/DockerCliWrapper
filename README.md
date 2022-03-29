@@ -30,14 +30,20 @@ The wrapper uses fluent syntax where possible and is fully asnyc. At the time of
 
 Get the running status and details (as above) of both the client & server:
 
-`await new DockerStatus();`
+````csharp
+await new DockerStatus();
+````
 
 Return a list of all images currently installed and do not truncate the data:
 
-`await new DockerImages().DoNotTruncate(true).ShowAll(true).Execute();`
+````csharp
+await new DockerImages().DoNotTruncate(true).ShowAll(true).Execute();
+````
 
 Return a list of all containers and do not truncate the data:
 
-`await new DockerImages().DoNotTruncate(true).ShowAll(true).Execute();`
+````csharp
+await new DockerImages().DoNotTruncate(true).ShowAll(true).Execute();
+````
 
 Check out the Wiki for full documentation and examples.
